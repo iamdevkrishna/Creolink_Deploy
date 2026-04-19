@@ -1,0 +1,31 @@
+[
+{"model": "auth.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$1200000$1g7vxw815LDnIQrwpUeceA$mCPpKzFpWAskRjuVCgom3WX+axbvVSHhcGcG9O/pJj4=", "last_login": "2026-02-26T18:15:51.453Z", "is_superuser": true, "username": "idevkrishna", "first_name": "", "last_name": "", "email": "devyadavofficial02@gmail.com", "is_staff": true, "is_active": true, "date_joined": "2026-02-26T18:15:21.433Z", "groups": [], "user_permissions": []}},
+
+{"model": "api.client", "pk": 8, "fields": {"name": "Manish", "profile_image": "client_avatars/IMG_3324_PqW3RVE.JPG", "magic_link_id": "f00c5510-85c2-44fe-a2d3-12f592947c06"}},
+{"model": "api.client", "pk": 9, "fields": {"name": "Deepanshu", "profile_image": "", "magic_link_id": "44d96753-bd3c-470f-b388-acc95f122e2f"}},
+{"model": "api.client", "pk": 10, "fields": {"name": "kd", "profile_image": "client_avatars/key.jpeg", "magic_link_id": "67955029-6c9c-4d1d-a19a-e244222a25bd"}},
+
+{"model": "api.project", "pk": 7, "fields": {"user": 1, "client": 8, "title": "Video Etech", "status": "Completed", "due_date": null, "created_at": "2026-02-27T08:59:22.507Z"}},
+{"model": "api.project", "pk": 8, "fields": {"user": 1, "client": 10, "title": "kk", "status": "Completed", "due_date": null, "created_at": "2026-03-07T09:12:35.085Z"}},
+{"model": "api.project", "pk": 9, "fields": {"user": 1, "client": 10, "title": "Scenoxis Showreel", "status": "Completed", "due_date": null, "created_at": "2026-03-07T10:23:29.548Z"}},
+
+{"model": "api.message", "pk": 33, "fields": {"project": 7, "sender": "Manish", "content": "Hi", "is_client": true, "timestamp": "2026-02-27T08:59:28.840Z"}},
+{"model": "api.message", "pk": 34, "fields": {"project": 7, "sender": "idevkrishna", "content": "Hello", "is_client": false, "timestamp": "2026-02-27T08:59:33.962Z"}},
+{"model": "api.message", "pk": 35, "fields": {"project": 7, "sender": "Manish", "content": "🚀 I would like to request a revision and reopen this project.", "is_client": true, "timestamp": "2026-02-27T09:00:07.993Z"}},
+
+{"model": "api.message", "pk": 36, "fields": {"project": 8, "sender": "idevkrishna", "content": "hi", "is_client": false, "timestamp": "2026-03-07T09:12:40.600Z"}},
+{"model": "api.message", "pk": 37, "fields": {"project": 8, "sender": "kd", "content": "hi", "is_client": true, "timestamp": "2026-03-07T09:13:36.485Z"}},
+
+{"model": "api.message", "pk": 38, "fields": {"project": 9, "sender": "idevkrishna", "content": "hi", "is_client": false, "timestamp": "2026-03-07T10:25:21.818Z"}},
+{"model": "api.message", "pk": 39, "fields": {"project": 9, "sender": "idevkrishna", "content": "hii", "is_client": false, "timestamp": "2026-03-07T10:25:31.473Z"}},
+
+{"model": "api.message", "pk": 40, "fields": {"project": 8, "sender": "kd", "content": "🚀 I would like to request a revision and reopen this project.", "is_client": true, "timestamp": "2026-03-07T10:34:11.274Z"}},
+
+{"model": "api.projectfile", "pk": 2, "fields": {"project": 7, "file": "project_assets/Gemini_Generated_Image_tq8swdtq8swdtq8s.png", "file_name": "Gemini_Generated_Image_tq8swdtq8swdtq8s.png", "uploaded_by": "idevkrishna", "is_client": false, "uploaded_at": "2026-02-27T08:59:49.081Z"}},
+
+{"model": "api.projectfile", "pk": 3, "fields": {"project": 9, "file": "project_assets/Timelapse_Video_Generation_Complete.mp4", "file_name": "Timelapse_Video_Generation_Complete.mp4", "uploaded_by": "idevkrishna", "is_client": false, "uploaded_at": "2026-03-07T10:25:26.584Z"}},
+
+{"model": "api.projectfile", "pk": 4, "fields": {"project": 9, "file": "project_assets/Gemini_Generated_Image_y769m1y769m1y769.png", "file_name": "Gemini_Generated_Image_y769m1y769m1y769.png", "uploaded_by": "idevkrishna", "is_client": false, "uploaded_at": "2026-03-07T10:25:39.423Z"}},
+
+{"model": "api.userprofile", "pk": 1, "fields": {"user": 1, "profile_image": "freelancer_avatars/DP_P15mzlM.jpg"}}
+]
