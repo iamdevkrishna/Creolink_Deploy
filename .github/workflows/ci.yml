@@ -33,9 +33,13 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/creolink-test-frontend:latest
 
       - name: Trigger Backend Deploy on Render
-        if: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK != '' }}
-        run: curl -s -X POST ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+        if: env.RENDER_HOOK != ''
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+        run: curl -s -X POST $RENDER_HOOK
         
       - name: Trigger Frontend Deploy on Render
-        if: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK != '' }}
-        run: curl -s -X POST ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+        if: env.RENDER_HOOK != ''
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+        run: curl -s -X POST $RENDER_HOOK
