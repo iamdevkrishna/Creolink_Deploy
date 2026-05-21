@@ -9,6 +9,9 @@ RUN npm install
 
 COPY . .
 
+# Set the production API URL during the Vite build process Let the container know where the backend is
+ENV VITE_API_BASE_URL=https://creolink-backend.onrender.com
+
 RUN npm run build
 
 # Production stage using Nginx
