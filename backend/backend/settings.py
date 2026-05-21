@@ -89,10 +89,11 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME', 'creolink_db'),
         'USER': os.environ.get('DB_USER', 'postgres'),
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'HOST': 'host.docker.internal',
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -179,3 +180,4 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

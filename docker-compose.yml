@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./backend
+    container_name: creolink_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: creolink_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
