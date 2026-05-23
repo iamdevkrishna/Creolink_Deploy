@@ -129,6 +129,31 @@ def client_portal_upload_photo(request, magic_link_id):
 
 
 
+@api_view(['POST'])
+@permission_classes([AllowAny])  # Unlocked for clients to reply
+@parser_classes([MultiPartParser, FormParser])
+def client_upload_file(request, magic_link_id, project_id):
+    try:
+        client = Client.objects.get(magic_link_id=magic_link_id)
+        project = Project.objects.get(id=project_id, client=client)
+
+        if 'file' not in request.FILES:
+            return Response({"error": "No file provided."}, status=400)
+
+        file = request.FILES['file']
+        project_file = ProjectFile.objects.create(
+            project=project,
+            file=file,
+            uploaded_by=client.name,
+            is_client=True
+        )
+
+        return Response(ProjectFileSerializer(project_file).data, status=201)
+
+    except (Client.DoesNotExist, Project.DoesNotExist):
+        return Response({"error": "Access Denied. Invalid link or project."}, status=403)
+
+
 # --- FREELANCER PROFILE ENDPOINTS ---
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

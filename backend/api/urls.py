@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ProjectViewSet, MessageViewSet, ProjectFileViewSet, ClientViewSet,
     client_portal_view, client_send_message, get_freelancer_profile,
-    upload_freelancer_photo, client_portal_upload_photo
+    upload_freelancer_photo, client_portal_upload_photo, client_upload_file
 )
 
 router = DefaultRouter()
@@ -19,6 +19,9 @@ urlpatterns = [
     path('portal/<uuid:magic_link_id>/', client_portal_view, name='client_portal'),
     path('portal/<uuid:magic_link_id>/projects/<int:project_id>/messages/', client_send_message,
          name='client_send_message'),
+         
+    # NEW: Route for clients to upload files to a project thread
+    path('portal/<uuid:magic_link_id>/projects/<int:project_id>/files/', client_upload_file, name='client_upload_file'),
 
     # 2. ADD THE MISSING URL ROUTE FOR CLIENT PHOTO UPLOAD
     path('portal/<uuid:magic_link_id>/upload_photo/', client_portal_upload_photo, name='client_portal_upload_photo'),
