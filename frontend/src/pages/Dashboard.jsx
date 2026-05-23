@@ -7,6 +7,7 @@ const Dashboard = () => {
 
   const [projects, setProjects] = useState([]);
   const [activeProject, setActiveProject] = useState(null);
+  const [sending, setSending] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useState("");
@@ -357,8 +358,9 @@ const Dashboard = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !activeProject) return;
+    if (!newMessage.trim() || !activeProject || sending) return;
 
+    setSending(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/messages/`, {
         method: 'POST',
@@ -372,7 +374,11 @@ const Dashboard = () => {
         setProjects(projects.map(p => p.id === activeProject.id ? updated : p));
         setNewMessage("");
       }
-    } catch (error) { console.error(error); }
+    } catch (error) { 
+      console.error(error); 
+    } finally {
+      setSending(false);
+    }
   };
 
   const handleFileUpload = async (e) => {
@@ -732,9 +738,9 @@ const Dashboard = () => {
                       <span className={`material-symbols-outlined text-[22px] ${uploading ? 'animate-pulse text-indigo-400' : ''}`}>{uploading ? 'cloud_sync' : 'attach_file'}</span>
                     </button>
                     <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-                    <input className="bg-transparent border-none text-white text-[15px] w-full focus:ring-0 outline-none px-2 disabled:opacity-50" placeholder={activeProject.status === "Completed" ? "Project completed. Resume to send messages." : "Type a message or attach a file..."} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} disabled={activeProject.status === "Completed"} />
-                    <button type="submit" disabled={activeProject.status === "Completed" || !newMessage.trim()} className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${activeProject.status === "Completed" || !newMessage.trim() ? 'bg-transparent text-slate-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] cursor-pointer hover:scale-105'}`}>
-                      <span className="material-symbols-outlined text-[20px]">send</span>
+                    <input className="bg-transparent border-none text-white text-[15px] w-full focus:ring-0 outline-none px-2 disabled:opacity-50" placeholder={activeProject.status === "Completed" ? "Project completed. Resume to send messages." : "Type a message or attach a file..."} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} disabled={activeProject.status === "Completed" || sending} />
+                    <button type="submit" disabled={activeProject.status === "Completed" || !newMessage.trim() || sending} className={`p-2.5 rounded-xl transition-all flex items-center justify-center ${activeProject.status === "Completed" || !newMessage.trim() || sending ? 'bg-transparent text-slate-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] cursor-pointer hover:scale-105'}`}>
+                      <span className="material-symbols-outlined text-[20px]">{sending ? 'hourglass_empty' : 'send'}</span>
                     </button>
                   </form>
                 </div>

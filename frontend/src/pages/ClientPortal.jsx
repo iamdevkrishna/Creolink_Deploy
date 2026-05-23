@@ -395,7 +395,9 @@ const getProfileImage = (imagePath) => {
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
-                            handleSendMessage(e);
+                              if (!sending) {
+                                handleSendMessage(e);
+                              }
                           }
                         }}
                         placeholder="Type a message or attach raw files..."
