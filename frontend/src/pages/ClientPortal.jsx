@@ -180,9 +180,9 @@ const getProfileImage = (imagePath) => {
     chatTimeline = [...textMsgs, ...fileMsgs].sort((a, b) => a.sortDate - b.sortDate);
   }
 
-  if (loading) return <div className="h-screen flex items-center justify-center bg-[#070b14] text-indigo-400">Loading Secure Portal...</div>;
+  if (loading) return <div className="h-[100dvh] w-full flex items-center justify-center bg-[#070b14] text-indigo-400">Loading Secure Portal...</div>;
   if (error || !client) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-[#070b14] text-slate-200">
+    <div className="h-[100dvh] w-full flex flex-col items-center justify-center bg-[#070b14] text-slate-200">
       <span className="material-symbols-outlined text-6xl text-rose-500 mb-4">gpp_maybe</span>
       <h1 className="text-2xl font-bold text-white mb-2">Access Denied</h1>
       <p className="text-slate-400">{error || "Could not load workspace."}</p>
@@ -190,7 +190,7 @@ const getProfileImage = (imagePath) => {
   );
 
   return (
-    <div className="bg-[#070b14] font-display text-slate-200 h-screen overflow-hidden flex selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="bg-[#070b14] font-display text-slate-200 h-[100dvh] w-full overflow-hidden flex selection:bg-indigo-500/30 selection:text-indigo-200">
 
       {/* HIDDEN INPUT FOR CLIENT AVATAR UPLOAD */}
       <input type="file" ref={clientAvatarUploadRef} onChange={handleClientAvatarUpload} className="hidden" accept="image/*" />
@@ -284,22 +284,24 @@ const getProfileImage = (imagePath) => {
 
         {activeProject && (
           <div className="flex flex-col h-full w-full z-10 relative">
-            <header className="h-16 border-b border-white/[0.05] flex items-center justify-between px-6 bg-white/[0.02] backdrop-blur-xl shrink-0 shadow-sm">
-              <div className="flex items-center gap-4">
-                <button onClick={() => setActiveProject(null)} className="p-2 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer mr-2"><span className="material-symbols-outlined">arrow_back</span></button>
-                <h2 className="text-white text-lg font-bold flex items-center gap-3">
-                  {activeProject.title}
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border ${activeProject.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'}`}>{activeProject.status}</span>
-                </h2>
+            <header className="h-16 border-b border-white/[0.05] flex items-center justify-between px-3 md:px-6 bg-white/[0.02] backdrop-blur-xl shrink-0 shadow-sm relative z-30">
+              <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
+                <button onClick={() => setActiveProject(null)} className="md:hidden p-2 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer mr-0 shrink-0"><span className="material-symbols-outlined">arrow_back</span></button>
+                <div className="group flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 overflow-hidden">
+                  <h2 className="text-white text-base md:text-lg font-bold flex flex-wrap items-center gap-2 md:gap-3">
+                    <span className="truncate max-w-[120px] sm:max-w-xs">{activeProject.title}</span>
+                    <span className={`shrink-0 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border ${activeProject.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'}`}>{activeProject.status}</span>
+                  </h2>
+                </div>
               </div>
-              <button onClick={() => setShowAssets(!showAssets)} className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 border cursor-pointer ${showAssets ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : 'bg-[#0d1323] text-slate-300 hover:text-white hover:bg-[#121b30] border-white/10'}`}>
-                <span className="material-symbols-outlined text-[18px]">inventory_2</span><span>Assets</span>
+              <button onClick={() => setShowAssets(!showAssets)} className={`flex items-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all duration-300 border cursor-pointer shrink-0 ${showAssets ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : 'bg-[#0d1323] text-slate-300 hover:text-white hover:bg-[#121b30] border-white/10'}`}>
+                <span className="material-symbols-outlined text-[16px] md:text-[18px]">inventory_2</span><span className="hidden sm:inline">Assets</span>
               </button>
             </header>
 
-            <div className="flex-1 flex overflow-hidden relative">
-              <section className="flex-1 flex flex-col min-w-0 relative">
-                <div className="flex-1 overflow-y-auto p-6 space-y-8 flex flex-col scroll-smooth pb-32 custom-scrollbar">
+            <div className="flex-1 flex flex-col overflow-hidden relative">
+              <section className="flex-1 flex flex-col min-w-0">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 md:space-y-8 flex flex-col scroll-smooth custom-scrollbar">
                   {chatTimeline.map((item) => (
                     <div key={item.id} className={`flex items-end gap-3 group ${item.is_client ? 'justify-end' : ''}`}>
 
@@ -355,7 +357,7 @@ const getProfileImage = (imagePath) => {
                 </div>
 
                 {/* DYNAMIC CHAT INPUT / REOPEN REQUEST BLOCK */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-4xl">
+                <div className="p-4 md:p-6 shrink-0 w-full max-w-4xl mx-auto">
                   {activeProject.status === "Completed" ? (
                     <div className="flex flex-col sm:flex-row items-center justify-between bg-[#0a0f1c]/90 backdrop-blur-2xl border border-rose-500/20 rounded-2xl p-4 shadow-2xl">
                       <div className="flex items-center gap-3 mb-3 sm:mb-0">
