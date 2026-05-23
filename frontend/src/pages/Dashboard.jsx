@@ -381,6 +381,41 @@ const Dashboard = () => {
     }
   };
 
+  const handleAddLinkAsset = async () => {
+    if (!activeProject) return;
+    const url = window.prompt("Enter an external URL (e.g. Google Drive link):");
+    if (!url) return;
+    let name = window.prompt("Enter a name for this asset (e.g. Project Assets folder):", "External Link");
+    if (!name) name = "External Link";
+
+    setUploading(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/files/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders()
+        },
+        body: JSON.stringify({
+          project: activeProject.id,
+          file_url: url,
+          file_name: name,
+          uploaded_by: activeUsername,
+          is_client: false
+        })
+      });
+      if (response.ok) {
+        const newFile = await response.json();
+        const updated = { ...activeProject, files: [...(activeProject.files || []), newFile] };
+        setActiveProject(updated);
+        setProjects(projects.map(p => p.id === activeProject.id ? updated : p));
+      } else {
+        alert("Failed to add link asset.");
+      }
+    } catch (error) { console.error(error); }
+    finally { setUploading(false); }
+  };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file || !activeProject) return;
@@ -462,7 +497,7 @@ const Dashboard = () => {
 
       {/* LEFT SIDEBAR */}
       {activeClient && (
-        <aside className="w-[280px] h-full flex flex-col bg-white/[0.02] border-r border-white/5 flex-shrink-0 z-20 backdrop-blur-2xl">
+        <aside className={`w-full md:w-[280px] h-full flex-col bg-white/[0.02] border-r border-white/5 flex-shrink-0 z-20 backdrop-blur-2xl ${activeProject ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-6 pb-4">
             <div
               onClick={() => { setActiveClient(null); setActiveProject(null); }}
@@ -533,7 +568,7 @@ const Dashboard = () => {
       )}
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-[#070b14] to-[#04060a]">
+      <main className={`flex-1 flex flex-col h-full overflow-hidden relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-[#070b14] to-[#04060a] ${activeClient && !activeProject ? 'hidden md:flex' : 'flex'}`}>
 
         {/* VIEW 0: CLIENT HUB */}
         {!activeClient && (
@@ -714,7 +749,10 @@ const Dashboard = () => {
                                <span className="text-sm font-semibold text-white truncate max-w-[200px]">{item.file_name}</span>
                                <span className="text-[10px] text-slate-400 mt-0.5 uppercase tracking-wider">Document</span>
                              </div>
-                             <a href={`${import.meta.env.VITE_API_BASE_URL}${item.file_url}`} target="_blank" rel="noopener noreferrer" className="mr-2 p-2 rounded-full bg-black/20 hover:bg-blue-500 hover:text-white text-slate-300 transition-colors cursor-pointer">
+                             <a href={item.file_url.startsWith('http') ? item.file_url : `${import.meta.env.VITE_API_BASE_URL}${item.file_url}`} target="_blank" rel="noopener noreferrer" className="mr-1 p-2 rounded-full bg-black/20 hover:bg-emerald-500 hover:text-white text-slate-300 transition-colors cursor-pointer" title="View Asset">
+                               <span className="material-symbols-outlined text-[18px]">visibility</span>
+                             </a>
+                             <a href={item.file_url.startsWith('http') ? item.file_url : `${import.meta.env.VITE_API_BASE_URL}${item.file_url}`} download={item.file_name} target="_blank" rel="noopener noreferrer" className="mr-2 p-2 rounded-full bg-black/20 hover:bg-blue-500 hover:text-white text-slate-300 transition-colors cursor-pointer" title="Download Asset">
                                <span className="material-symbols-outlined text-[18px]">download</span>
                              </a>
                           </div>
@@ -746,10 +784,11 @@ const Dashboard = () => {
                 </div>
               </section>
 
-              <aside className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col bg-white/[0.01] border-l border-white/[0.05] h-full backdrop-blur-3xl ${showAssets ? 'w-[360px] translate-x-0 opacity-100' : 'w-0 translate-x-full opacity-0 border-none'}`}>
-                <div className="flex flex-col h-full min-w-[360px]">
+<aside className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col bg-white/[0.01] border-l border-white/[0.05] h-full backdrop-blur-3xl absolute right-0 z-40 md:relative ${showAssets ? 'w-full md:w-[360px] translate-x-0 opacity-100' : 'w-0 translate-x-full opacity-0 border-none'}`}>
+                <div className="flex flex-col h-full min-w-full md:min-w-[360px]">
                   <div className="flex items-center justify-between p-5 border-b border-white/[0.05]">
                     <h3 className="text-sm font-semibold text-white flex items-center gap-2"><span className="material-symbols-outlined text-blue-400">folder_zip</span> Assets</h3>
+                    <button onClick={() => setShowAssets(false)} className="md:hidden text-slate-400 hover:text-white"><span className="material-symbols-outlined">close</span></button>
                   </div>
 
                   <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 custom-scrollbar">
@@ -777,7 +816,8 @@ const Dashboard = () => {
                             </div>
                           </div>
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0">
-                            <a href={`${import.meta.env.VITE_API_BASE_URL}${file.file}`} target="_blank" rel="noopener noreferrer" className="size-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer" title="Download"><span className="material-symbols-outlined text-[16px]">download</span></a>
+                            <a href={(file.file_url || file.file).startsWith('http') ? (file.file_url || file.file) : `${import.meta.env.VITE_API_BASE_URL}${file.file_url || file.file}`} target="_blank" rel="noopener noreferrer" className="size-7 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors cursor-pointer" title="View Asset"><span className="material-symbols-outlined text-[16px]">visibility</span></a>
+                            <a href={(file.file_url || file.file).startsWith('http') ? (file.file_url || file.file) : `${import.meta.env.VITE_API_BASE_URL}${file.file_url || file.file}`} download={file.file_name} target="_blank" rel="noopener noreferrer" className="size-7 flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer" title="Download Asset"><span className="material-symbols-outlined text-[16px]">download</span></a>
                             <button onClick={() => handleDeleteFile(file.id)} disabled={activeProject.status === "Completed"} className={`size-7 flex items-center justify-center rounded-lg transition-colors ${activeProject.status === "Completed" ? 'text-slate-600 cursor-not-allowed' : 'text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer'}`} title="Delete"><span className="material-symbols-outlined text-[16px]">delete</span></button>
                           </div>
                         </div>

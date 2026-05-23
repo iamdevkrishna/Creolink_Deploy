@@ -43,12 +43,15 @@ class Message(models.Model):
 
 class ProjectFile(models.Model):
     project = models.ForeignKey(Project, related_name='files', on_delete=models.CASCADE)
-    file = models.FileField(upload_to='project_assets/')
+    file = models.FileField(upload_to='project_assets/', blank=True, null=True)
     file_name = models.CharField(max_length=255, blank=True)
 
     # NEW FIELDS: Track who uploaded the asset!
     uploaded_by = models.CharField(max_length=100, default="Dev Krishna")
     is_client = models.BooleanField(default=False)
+    
+    # NEW FIELD: Support for external assets (Google Drive etc.)
+    file_url = models.URLField(max_length=1000, blank=True, null=True)
 
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
@@ -58,7 +61,7 @@ class ProjectFile(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.file_name
+        return self.file_name or self.file_url or "Asset"
 
 # NEW: Freelancer Profile Model
 class UserProfile(models.Model):

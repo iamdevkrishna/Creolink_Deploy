@@ -137,13 +137,18 @@ def client_upload_file(request, magic_link_id, project_id):
         client = Client.objects.get(magic_link_id=magic_link_id)
         project = Project.objects.get(id=project_id, client=client)
 
-        if 'file' not in request.FILES:
-            return Response({"error": "No file provided."}, status=400)
+        if 'file' not in request.FILES and 'file_url' not in request.data:
+            return Response({"error": "No file or URL provided."}, status=400)
 
-        file = request.FILES['file']
+        file = request.FILES.get('file')
+        file_url = request.data.get('file_url')
+        file_name = request.data.get('file_name', '')
+        
         project_file = ProjectFile.objects.create(
             project=project,
             file=file,
+            file_url=file_url,
+            file_name=file_name,
             uploaded_by=client.name,
             is_client=True
         )

@@ -196,7 +196,7 @@ const getProfileImage = (imagePath) => {
       <input type="file" ref={clientAvatarUploadRef} onChange={handleClientAvatarUpload} className="hidden" accept="image/*" />
 
       {/* SIDEBAR */}
-      <aside className="w-[280px] h-full flex flex-col bg-white/[0.02] border-r border-white/5 flex-shrink-0 z-20 backdrop-blur-2xl">
+      <aside className={`w-full md:w-[280px] h-full flex-col bg-white/[0.02] border-r border-white/5 flex-shrink-0 z-20 backdrop-blur-2xl ${activeProject ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-6 pb-4">
           <div className="flex items-center gap-3 mb-6" onClick={() => setActiveProject(null)} style={{cursor: 'pointer'}}>
             <div className="bg-gradient-to-tr from-blue-600 to-indigo-600 size-10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.3)]">
@@ -241,7 +241,7 @@ const getProfileImage = (imagePath) => {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-[#070b14] to-[#04060a]">
+      <main className={`flex-1 flex flex-col h-full overflow-hidden relative bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-[#070b14] to-[#04060a] ${!activeProject ? 'hidden md:flex' : 'flex'}`}>
 
         {!activeProject && (
           <div className="flex-1 overflow-y-auto p-10 z-10 flex flex-col items-center">
@@ -333,7 +333,8 @@ const getProfileImage = (imagePath) => {
                              <div className="flex flex-col pr-4 overflow-hidden">
                                <span className="text-sm font-semibold text-white truncate max-w-[200px]">{item.file_name}</span>
                              </div>
-                             <a href={`${import.meta.env.VITE_API_BASE_URL}${item.file_url}`} target="_blank" rel="noopener noreferrer" className="mr-2 p-2 rounded-full bg-black/20 hover:bg-blue-500 hover:text-white text-slate-300 transition-colors cursor-pointer"><span className="material-symbols-outlined text-[18px]">download</span></a>
+                             <a href={(item.file_url || item.file).startsWith('http') ? (item.file_url || item.file) : `${import.meta.env.VITE_API_BASE_URL}${item.file_url}`} target="_blank" rel="noopener noreferrer" className="mr-1 p-2 rounded-full bg-black/20 hover:bg-emerald-500 hover:text-white text-slate-300 transition-colors cursor-pointer" title="View Asset"><span className="material-symbols-outlined text-[18px]">visibility</span></a>
+                             <a href={(item.file_url || item.file).startsWith('http') ? (item.file_url || item.file) : `${import.meta.env.VITE_API_BASE_URL}${item.file_url}`} download={item.file_name} target="_blank" rel="noopener noreferrer" className="mr-2 p-2 rounded-full bg-black/20 hover:bg-blue-500 hover:text-white text-slate-300 transition-colors cursor-pointer" title="Download Asset"><span className="material-symbols-outlined text-[18px]">download</span></a>
                           </div>
                         )}
                       </div>
@@ -417,10 +418,11 @@ const getProfileImage = (imagePath) => {
                 </div>
               </section>
 
-              <aside className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col bg-white/[0.01] border-l border-white/[0.05] h-full backdrop-blur-3xl ${showAssets ? 'w-[360px] translate-x-0 opacity-100' : 'w-0 translate-x-full opacity-0 border-none'}`}>
-                <div className="flex flex-col h-full min-w-[360px]">
+              <aside className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col bg-white/[0.01] border-l border-white/[0.05] h-full backdrop-blur-3xl absolute right-0 z-40 md:relative ${showAssets ? 'w-full md:w-[360px] translate-x-0 opacity-100' : 'w-0 translate-x-full opacity-0 border-none'}`}>
+                <div className="flex flex-col h-full min-w-full md:min-w-[360px]">
                   <div className="flex items-center justify-between p-5 border-b border-white/[0.05]">
                     <h3 className="text-sm font-semibold text-white flex items-center gap-2"><span className="material-symbols-outlined text-blue-400">folder_zip</span> Assets</h3>
+                    <button onClick={() => setShowAssets(false)} className="md:hidden text-slate-400 hover:text-white"><span className="material-symbols-outlined">close</span></button>
                   </div>
                   <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 custom-scrollbar">
 
@@ -446,7 +448,10 @@ const getProfileImage = (imagePath) => {
                               <span className="text-sm font-medium text-slate-200 truncate" title={file.file_name}>{file.file_name}</span>
                             </div>
                           </div>
-                          <a href={`${import.meta.env.VITE_API_BASE_URL}${file.file}`} target="_blank" rel="noopener noreferrer" className="size-7 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"><span className="material-symbols-outlined text-[16px]">download</span></a>
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0">
+                             <a href={(file.file_url || file.file).startsWith('http') ? (file.file_url || file.file) : `${import.meta.env.VITE_API_BASE_URL}${file.file_url || file.file}`} target="_blank" rel="noopener noreferrer" className="size-7 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors cursor-pointer" title="View"><span className="material-symbols-outlined text-[16px]">visibility</span></a>
+                             <a href={(file.file_url || file.file).startsWith('http') ? (file.file_url || file.file) : `${import.meta.env.VITE_API_BASE_URL}${file.file_url || file.file}`} download={file.file_name} target="_blank" rel="noopener noreferrer" className="size-7 flex items-center justify-center text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer" title="Download"><span className="material-symbols-outlined text-[16px]">download</span></a>
+                          </div>
                         </div>
                       ))}
                     </div>
